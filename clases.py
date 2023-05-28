@@ -1,4 +1,6 @@
 from datetime import timedelta, time
+from auxiliar import *
+
 class RespuestaDeCliente:
     def __init__(self, fechaEncuesta, respuestaSeleccionada):
         self.fechaEncuesta = fechaEncuesta
@@ -175,6 +177,62 @@ class Encuesta:
             vector.append(i.listarRespuestasPosibles())
         return vector
         
+class Controlador:
+    def __init__(self):
+        self.llamadas = []
+        self.fechaInicio = None
+        self.fechaFin = None
+        self.llamadaSeleccionada = None
+        self.encuestas = []
+        
+
+    def buscarLlamadas(self):
+        llamadasauxiliar = []
+        for i in self.llamadas:
+            if (self.fechaInicio < i.esDePeriodo() < self.fechaFin) and i.tieneRespuestas():
+                llamadasauxiliar.append(i)
+        self.llamadas = llamadasauxiliar
+
+    #metodo para setear las fechas
+    def tomarFechas(self, fechaHoraInicio, fechaHoraFin):
+        self.fechaInicio = fechaHoraInicio
+        self.fechaFin = fechaHoraFin
+
+    #metodo para setear la llamada seleccionada
+    def tomarLlamada(self, posicionLlamada):
+        if posicionLlamada < len(self.llamadas):
+            self.llamadaSeleccionada = self.llamadas[posicionLlamada]
+
+    def buscarDatosLlamada(self):
+        return self.llamadaSeleccionada.getDuracion(),self.llamadaSeleccionada.getNombreClienteDeLlamada(),self.llamadaSeleccionada.getEstadoActual()
+
+    #este metodo creo que deberia ser de la pantalla (lo pongo aca para probar lo demas)
+    def mostrarLlamadas(self):
+        for i in self.llamadas:
+            print("en que fecha se hizo",i.esDePeriodo())
+            print("tiene encuesta? ",i.encuestaEnviada)
+            print("cliente: ",i.cliente.nombreCompleto)
+            print()
+
+    def buscarEncuestasLlamada(self):
+        respuestasDelCliente = self.buscarRespuestasDeLlamada()
+        n = len(respuestasDelCliente)
+        for i in self.encuestas:
+            if i.esEncuestaEnPeriodo() < self.llamadaSeleccionada.esDePeriodo():
+                continue
+            respuestasDeCadaEncuesta = i.getRespuestasPregunta()
+            if len(respuestasDeCadaEncuesta) == n:
+                for j in range(n):
+                    if not (respuestasDelCliente[j] in respuestasDeCadaEncuesta[j]):
+                        break
+                else:
+                    return i
+
+    def buscarRespuestasDeLlamada(self):
+        return self.llamadaSeleccionada.getRespuestas()
+
+    def setEncuestas(self, encuestas):
+        self.encuestas = encuestas
 
 
 # Assuming you have the necessary data for object initialization
@@ -187,20 +245,6 @@ cliente = Cliente("123456789", "John Doe", "987654321")
 cambio_estado = [CambioEstado("2023-05-25 10:00:00", Estado("Iniciada")), CambioEstado("2023-05-25 11:00:00", Estado("Finalizada"))]
 respuestas_encuesta = [RespuestaDeCliente("2023-05-25", RespuestaPosible("Yes", 1))]
 
-# Instantiate the object of the Llamada class
-llamada = Llamada(
-    descripcion_operador,
-    detalle_accion_requerida,
-    duracion,
-    encuesta_enviada,
-    observacion_auditor,
-    cliente,
-    cambio_estado,
-    respuestas_encuesta
-)
-
-# You can now use the created object as per your requirements
-# For example, you can access its attributes or call its methods
 
 
 

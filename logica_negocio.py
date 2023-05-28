@@ -1,23 +1,21 @@
-from clases import *
+from auxiliar import *
 
-def test():
-
-
-    controlador = Controlador()
-
-    cargarEncuestas(controlador.encuestas)
-    mostrarEncuesta(controlador.encuestas[1])
-
-    cargarllamadas(controlador.llamadas)
-    controlador.tomarFechas(datetime(2023,1,1), datetime(2023,12,29))
-    controlador.buscarLlamadas()
-    controlador.tomarLlamada(int(input("seleccione la llamada: "))-1)
-    print(controlador.buscarDatosLlamada())
-    mostrarRespuestasDeLlamada(controlador.llamadaSeleccionada)
+def iniciarCasoDeUso():
+    pant = Pantalla()
+    gestor = Controlador(pant)
+    cargarllamadas(gestor.llamadas)
+    cargarEncuestas(gestor.encuestas)
+    mostrarLlamadas(gestor.llamadas)
 
 
-    mostrarEncuesta(controlador.buscarEncuestasLlamada())
+    pant.consultarEncuestas(gestor)
+
+    gestor.tomarFechas(pant.fechaInicio, pant.fechaFin)
+    gestor.buscarLlamadas()
+    mostrarLlamadas(gestor.llamadas)
+
+    pant.mostrarLlamadas(gestor.llamadas)
 
 
 
-test()
+iniciarCasoDeUso()

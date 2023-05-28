@@ -1,5 +1,7 @@
-from datetime import timedelta, time
-from auxiliar import *
+from datetime import timedelta, time, datetime
+from tkinter import *
+from tkinter import ttk
+
 
 class RespuestaDeCliente:
     def __init__(self, fechaEncuesta, respuestaSeleccionada):
@@ -178,12 +180,14 @@ class Encuesta:
         return vector
         
 class Controlador:
-    def __init__(self):
+    def __init__(self, pantalla):
         self.llamadas = []
         self.fechaInicio = None
         self.fechaFin = None
         self.llamadaSeleccionada = None
         self.encuestas = []
+        self.pantalla = pantalla
+
         
 
     def buscarLlamadas(self):
@@ -206,14 +210,6 @@ class Controlador:
     def buscarDatosLlamada(self):
         return self.llamadaSeleccionada.getDuracion(),self.llamadaSeleccionada.getNombreClienteDeLlamada(),self.llamadaSeleccionada.getEstadoActual()
 
-    #este metodo creo que deberia ser de la pantalla (lo pongo aca para probar lo demas)
-    def mostrarLlamadas(self):
-        for i in self.llamadas:
-            print("en que fecha se hizo",i.esDePeriodo())
-            print("tiene encuesta? ",i.encuestaEnviada)
-            print("cliente: ",i.cliente.nombreCompleto)
-            print()
-
     def buscarEncuestasLlamada(self):
         respuestasDelCliente = self.buscarRespuestasDeLlamada()
         n = len(respuestasDelCliente)
@@ -234,17 +230,91 @@ class Controlador:
     def setEncuestas(self, encuestas):
         self.encuestas = encuestas
 
+    def consultarEncuestas(self):
+        self.pantalla.solicitarFechasFiltro()
 
-# Assuming you have the necessary data for object initialization
-descripcion_operador = "Operator description"
-detalle_accion_requerida = "Action required details"
-duracion = 120
-encuesta_enviada = True
-observacion_auditor = "Auditor observation"
-cliente = Cliente("123456789", "John Doe", "987654321")
-cambio_estado = [CambioEstado("2023-05-25 10:00:00", Estado("Iniciada")), CambioEstado("2023-05-25 11:00:00", Estado("Finalizada"))]
-respuestas_encuesta = [RespuestaDeCliente("2023-05-25", RespuestaPosible("Yes", 1))]
+class Pantalla:
+    def __init__(self):
+        self.pantalla = None
+        self.marco = None
+        self.gestorConsultasEncuestas = None
+        self.fechaInicio = None
+        self.fechaFin = None
+        
+    
+    def consultarEncuestas(self, gestor):
+        self.habilitarPantalla()
+        self.gestorConsultasEncuestas = gestor
+        self.gestorConsultasEncuestas.consultarEncuestas()
+        mainloop()
+        
+    
+    def habilitarPantalla(self):
+        self.pantalla = Tk()
+        self.pantalla.geometry("350x400+100+100")
+        marco = ttk.Frame(self.pantalla, padding=15, height=100, width=100)
+        marco.grid()
+        
+        
+    
+    def solicitarFechasFiltro(self):
+        self.tomarFechaInicio()
+        self.tomarFechaFin()
+        
 
+
+    def tomarFechaInicio(self):
+        dia = StringVar()
+        mes = StringVar()
+        año = StringVar()
+        marco = ttk.Frame(self.pantalla, padding=15, height=50, width=50)
+        marco.grid()
+        ttk.Entry(marco, textvariable=dia).grid(column=0,row=0)
+        ttk.Entry(marco, textvariable=mes).grid(column=0,row=1)
+        ttk.Entry(marco, textvariable=año).grid(column=0,row=2)
+        enter = ttk.Button(marco, text="Enter", command=lambda:(self.setFechainicio(año.get(),mes.get(),dia.get()))).grid(column=1,row=3)
+        
+
+    def setFechainicio(self, año, mes, dia):
+        año = int(año)
+        mes = int(mes)
+        dia = int(dia)
+        self.fechaInicio = datetime(año, mes, dia)
+
+        
+
+    def tomarFechaFin(self):
+        dia = StringVar()
+        mes = StringVar()
+        año = StringVar()
+        marco = ttk.Frame(self.pantalla, padding=15, height=50, width=50)
+        marco.grid()
+        ttk.Entry(marco, textvariable=dia).grid(column=0,row=3)
+        ttk.Entry(marco, textvariable=mes).grid(column=0,row=4)
+        ttk.Entry(marco, textvariable=año).grid(column=0,row=5)
+        enter = ttk.Button(marco, text="Enter", command=lambda:(self.setFechaFin(año.get(),mes.get(),dia.get()))).grid(column=1,row=6)
+        
+        
+
+    def setFechaFin(self, año, mes, dia):
+        año = int(año)
+        mes = int(mes)
+        dia = int(dia)
+        self.fechaFin = datetime(año, mes, dia)
+        self.pantalla.destroy()
+
+    def mostrarLlamadas(self, vector):
+        self.habilitarPantalla()
+
+        j = 0
+        for i in vector:
+            j+=1
+            llamada = ttk.Radiobutton(self.pantalla, text="llamada del "+str(i.esDePeriodo()), variable=i.esDePeriodo(), value=j).grid(row=j)
+        mainloop()
+        
+
+
+    
 
 
 

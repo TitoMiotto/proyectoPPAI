@@ -1,7 +1,6 @@
 from clases import *
 import random
 from datetime import datetime, timedelta
-from tkinter import *
 
 #metodo auxiliar para cargar un vector con respuestas posibles
 def cargarRespuestas():
@@ -44,11 +43,11 @@ def cargarllamadas(vector):
         fecha = datetime(2023, random.randint(1, 12),random.randint(1,28), random.randrange(20))
         estado = Estado(random.choice(estados))
         cambioEstado = [CambioEstado(fecha, estado), CambioEstado(fecha + timedelta(hours=2) , estado), CambioEstado(fecha + timedelta(hours=3), estado)]
-        if encuesta_enviada:
+        if encuestaEnviada:
             resEncuesta = []
             print("ingrese las respuestas que tendra la llamada N° ",int(i)+1)
             for i in range(3):
-                resEncuesta.append(RespuestaDeCliente(fecha,RespuestaPosible("respuesta "+input("ingrese el numero de la respuesta: "),i)))
+                resEncuesta.append(RespuestaDeCliente(fecha,RespuestaPosible("respuesta "+str(random.randint(0, 14)),i)))
         else:
             resEncuesta = None
 
@@ -68,10 +67,6 @@ def mostrarLlamadas(llamadas):
         print("cliente: ",i.cliente.nombreCompleto)
         print()
 
+def prin():
+    print("hola")
 
-root = Tk()
-frm = ttk.Frame(root, padding=10)
-frm.grid()
-ttk.Label(frm, text="Consultar Encuesta").grid(column=0, row=0)
-ttk.Button(frm, text="iniciar", command=root.destroy()).grid(column=1,row=0)
-root.mainloop()

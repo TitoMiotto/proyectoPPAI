@@ -179,6 +179,148 @@ class Encuesta:
             vector.append(i.listarRespuestasPosibles())
         return vector
         
+class Controlador:
+    def __init__(self, pantalla):
+        self.llamadas = []
+        self.fechaInicio = None
+        self.fechaFin = None
+        self.llamadaSeleccionada = None
+        self.encuestas = []
+        self.pantalla = pantalla
+
+        
+
+    def buscarLlamadas(self):
+        llamadasauxiliar = []
+        for i in self.llamadas:
+            if (self.fechaInicio < i.esDePeriodo() < self.fechaFin) and i.tieneRespuestas():
+                llamadasauxiliar.append(i)
+        self.llamadas = llamadasauxiliar
+
+    #metodo para setear las fechas
+    def tomarFechas(self, fechaHoraInicio, fechaHoraFin):
+        self.fechaInicio = fechaHoraInicio
+        self.fechaFin = fechaHoraFin
+
+    #metodo para setear la llamada seleccionada
+    def tomarLlamada(self, posicionLlamada):
+        if posicionLlamada < len(self.llamadas):
+            self.llamadaSeleccionada = self.llamadas[posicionLlamada]
+
+    def buscarDatosLlamada(self):
+        return self.llamadaSeleccionada.getDuracion(),self.llamadaSeleccionada.getNombreClienteDeLlamada(),self.llamadaSeleccionada.getEstadoActual()
+
+    def buscarEncuestasLlamada(self):
+        respuestasDelCliente = self.buscarRespuestasDeLlamada()
+        n = len(respuestasDelCliente)
+        for i in self.encuestas:
+            if i.esEncuestaEnPeriodo() < self.llamadaSeleccionada.esDePeriodo():
+                continue
+            respuestasDeCadaEncuesta = i.getRespuestasPregunta()
+            if len(respuestasDeCadaEncuesta) == n:
+                for j in range(n):
+                    if not (respuestasDelCliente[j] in respuestasDeCadaEncuesta[j]):
+                        break
+                else:
+                    return i
+
+    def buscarRespuestasDeLlamada(self):
+        return self.llamadaSeleccionada.getRespuestas()
+
+    def setEncuestas(self, encuestas):
+        self.encuestas = encuestas
+
+    def consultarEncuestas(self):
+        self.pantalla.solicitarFechasFiltro()
+
+class Pantalla:
+    def __init__(self):
+        self.pantalla = None
+        self.marco = None
+        self.gestorConsultasEncuestas = None
+        self.fechaInicio = None
+        self.fechaFin = None
+        
+    
+    def consultarEncuestas(self, gestor):
+        self.gestorConsultasEncuestas = gestor
+        self.gestorConsultasEncuestas.consultarEncuestas()
+
+        
+    
+    def habilitarPantalla(self):
+        self.pantalla = Tk()
+        self.pantalla.geometry("350x400+100+100")
+        marco = ttk.Frame(self.pantalla, padding=15, height=100, width=100)
+        marco.grid()
+        self.marco = marco
+        
+        
+    
+    def solicitarFechasFiltro(self):
+        self.habilitarPantalla()
+        self.tomarFechaInicio()
+        self.tomarFechaFin()
+        mainloop()
+
+
+    def tomarFechaInicio(self):
+        dia = StringVar()
+        mes = StringVar()
+        año = StringVar()
+        ttk.Entry(self.marco, textvariable=dia).grid(column=0,row=0)
+        ttk.Entry(self.marco, textvariable=mes).grid(column=0,row=1)
+        ttk.Entry(self.marco, textvariable=año).grid(column=0,row=2)
+        enter = ttk.Button(self.marco, text="Enter", command=lambda:(self.setFechainicio(año.get(),mes.get(),dia.get()))).grid(column=1,row=3)
+        
+
+    def setFechainicio(self, año, mes, dia):
+        año = int(año)
+        mes = int(mes)
+        dia = int(dia)
+        self.fechaInicio = datetime(año, mes, dia)
+
+        
+
+    def tomarFechaFin(self):
+        dia = StringVar()
+        mes = StringVar()
+        año = StringVar()
+        ttk.Entry(self.marco, textvariable=dia).grid(column=0,row=4)
+        ttk.Entry(self.marco, textvariable=mes).grid(column=0,row=5)
+        ttk.Entry(self.marco, textvariable=año).grid(column=0,row=6)
+        enter = ttk.Button(self.marco, text="Enter", command=lambda:(self.setFechaFin(año.get(),mes.get(),dia.get()),self.stop())).grid(column=1,row=7)
+        
+        
+
+    def setFechaFin(self, año, mes, dia):
+        año = int(año)
+        mes = int(mes)
+        dia = int(dia)
+        self.fechaFin = datetime(año, mes, dia)
+        
+
+    def mostrarLlamadas(self, vector):
+        marco = self.habilitarPantalla()
+        j = 0
+        var = StringVar()
+        for i in vector:
+            j+=1
+            llamada = ttk.Radiobutton(marco, text="llamada del "+str(i.esDePeriodo()), variable=var, value=j).grid(row=j)
+        ttk.Button(marco, text="seleccionar llamada", command=self.stop).grid(column=3)
+        mainloop()
+        return var
+
+    def stop(self):
+        self.pantalla.destroy()
+
+        
+    
+    def tomarLlamada(self):
+        marco = ttk.Frame(self.pantalla, padding=15, height=100, width=100)
+        marco.grid()
+        ttk.Button(marco, text="seleccionar llamada", command=print("hola"))
+
 
     
 

@@ -1,11 +1,11 @@
 from clases import *
 import random
-from datetime import datetime, timedelta
+
 
 #metodo auxiliar para cargar un vector con respuestas posibles
 def cargarRespuestas():
     vector = []
-    for i in range(3):
+    for i in range(4):
         vector.append(RespuestaPosible("respuesta "+str(random.randrange(20)), i))
     return vector
     
@@ -13,14 +13,14 @@ def cargarRespuestas():
 #metodo auxiliar para cargar un vector con preguntas
 def cargarpreguntas():
     vector = []
-    for i in range(3):
+    for i in range(2):
         vector.append(Pregunta("Pregunta "+str(random.randint(1, 15)), cargarRespuestas()))
     return vector
 
 #metodo auxiliar para cargar un vector con encuestas
 def cargarEncuestas(vector):
     #def __init__(self, fechaFinVigencia, descripcion, pregunta):
-    for i in range(2):
+    for i in range(3):
         vector.append(Encuesta(datetime(2023,random.randint(1, 12),random.randint(1, 12)), ("encuesta "+str(i)), cargarpreguntas()))
 
 #metodo para mostrar encuesta
@@ -36,7 +36,7 @@ def mostrarEncuesta(e):
 #metodo auxiliar para cargar un vector con llamadas
 def cargarllamadas(vector):
     estados = ["inicial","finalizada","enProceso"]
-    for i in range(5):
+    for i in range(10):
         duracion = random.randrange(110)
         encuestaEnviada = random.choice([True])
         cliente = Cliente(random.randrange(42100), "martin", random.randint(351000, 351999))

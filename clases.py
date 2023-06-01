@@ -1,6 +1,5 @@
 from datetime import timedelta, time, datetime
-from tkinter import *
-from tkinter import ttk
+
 
 
 class RespuestaDeCliente:

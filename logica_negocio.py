@@ -1,6 +1,8 @@
 from auxiliar import *
 import pickle 
 from os import path
+from tkinter import *
+from tkinter import ttk
 
 class Controlador:
     def __init__(self, pantalla):
@@ -36,7 +38,8 @@ class Controlador:
         estado = self.llamadaSeleccionada.getEstadoActual()
         respuestas = self.buscarRespuestasDeLlamada()
         encuesta = self.buscarEncuestasLlamada()
-        self.pantalla.mostrarLlamada(duracion,cliente,estado, respuestas, encuesta)
+        self.pantalla.mostrarLlamada(duracion, cliente, estado, respuestas, encuesta)
+
 
     def buscarEncuestasLlamada(self):
         respuestasDelCliente = self.buscarRespuestasDeLlamada()
@@ -64,9 +67,16 @@ class Controlador:
         self.pantalla.mostrarLlamadas()
         self.buscarDatosLlamada()
 
+
     def tomarseleccion(self, valor):
+        duracion = self.llamadaSeleccionada.getDuracion()
+        cliente = self.llamadaSeleccionada.getNombreClienteDeLlamada()
+        estado = self.llamadaSeleccionada.getEstadoActual()
+        respuestas = self.buscarRespuestasDeLlamada()
+        encuesta = self.buscarEncuestasLlamada()
         m.open("archivo.cvs","wt")
         pickle.dump(obj, file)
+
 
 
 class Pantalla:
@@ -98,24 +108,25 @@ class Pantalla:
         dia = StringVar()
         mes = StringVar()
         año = StringVar()
-        ttk.Label(self.marco,text="dia").grid(column=0,row=0)
-        ttk.Label(self.marco,text="mes").grid(column=0,row=1)
-        ttk.Label(self.marco,text="año").grid(column=0,row=2)
-        ttk.Entry(self.marco, textvariable=dia).grid(column=1,row=0)
-        ttk.Entry(self.marco, textvariable=mes).grid(column=1,row=1)
-        ttk.Entry(self.marco, textvariable=año).grid(column=1,row=2)
+        ttk.Label(self.marco,text="Dia").grid(column=0,row=1)
+        ttk.Label(self.marco,text="Mes").grid(column=0,row=2)
+        ttk.Label(self.marco,text="Año").grid(column=0,row=3)
+        ttk.Entry(self.marco, textvariable=dia).grid(column=1,row=1)
+        ttk.Entry(self.marco, textvariable=mes).grid(column=1,row=2)
+        ttk.Entry(self.marco, textvariable=año).grid(column=1,row=3)
         enter = ttk.Button(self.marco, text="Enter", command=self.stop).grid(column=1,row=4)
         mainloop()
         return int(año.get()),int(mes.get()),int(dia.get())
-
+    #cambiar en la secuencia, tomar fecha inicio y despues generar pantalla.
     def tomarFechaInicio(self):
         self.generarPantalla()
-        ttk.LabelFrame(self.marco, text="ingrese la fecha de inicio de busqueda").grid()
+        ttk.Label(self.marco, text="Ingrese la fecha de inicio de busqueda").grid()
         año,mes,dia= self.aux()
         self.fechaInicio = datetime(año, mes, dia)
 
     def tomarFechaFin(self):
         self.generarPantalla()
+        ttk.Label(self.marco, text="Ingrese la fecha de fin de busqueda").grid()
         año,mes,dia= self.aux()
         self.fechaFin = datetime(año, mes, dia)
         
@@ -130,12 +141,16 @@ class Pantalla:
     
     def tomarLlamada(self):
         self.generarPantalla()
+        #canvas = Canvas(self.pantalla, bg= "red", height= 240)
+        #scroll = ttk.Scrollbar(self.pantalla,orient= "vertical", command = canvas.yview)
+        #scroll.grid(row=0, column=2, sticky="ns")
+        #self.marco = Frame(canvas)
         j = 0
         var = StringVar()
         for i in self.gestorConsultasEncuestas.llamadas:
             j+=1
-            llamada = ttk.Radiobutton(self.marco, text="llamada del "+str(i.esDePeriodo()), variable=var, value=j).grid(row=j)
-        boton = ttk.Button(self.marco, text="seleccionar llamada", command=self.stop).grid(column=3)
+            llamada = ttk.Radiobutton(self.marco, text="Llamada del "+str(i.esDePeriodo()), variable=var, value=j).grid(row=j)
+        boton = ttk.Button(self.marco, text="seleccionar llamada", command=self.stop).grid(column=1)
         mainloop()
         return int(var.get())
 
@@ -164,6 +179,9 @@ class Pantalla:
 def iniciarCasoDeUso():
     pant = Pantalla()
     gestor = Controlador(pant)
+    cargarEncuestas(gestor.encuestas)
+    mostrarEncuesta(gestor.encuestas)
+    gestor.encuestas.append(cargarLlamadaManual())
     pant.consultarEncuestas(gestor)
     gestor.consultarEncuestas()
 

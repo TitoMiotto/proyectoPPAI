@@ -14,7 +14,7 @@ def cargarRespuestas():
 def cargarpreguntas():
     vector = []
     for i in range(3):
-        vector.append(Pregunta("Pregunta "+str(random.randint(1, 15)), cargarRespuestas()))
+        vector.append(Pregunta("Pregunta " + str(i), cargarRespuestas()))
     return vector
 
 #metodo auxiliar para cargar un vector con encuestas
@@ -41,7 +41,7 @@ def cargarllamadas(vector):
     apellidos = ("Sosa", "Montivero", "Malamud", "Venturini", "Boris")
     for i in range(5):
         duracion = random.randrange(110)
-        encuestaEnviada = random.choice([True, False])
+        encuestaEnviada = random.choice([True])
         cliente = Cliente(random.randrange(42100), random.choice(nombres) + " " +random.choice(apellidos), random.randint(351000, 351999))
         fecha = datetime(2023, random.randint(1, 12),random.randint(1,28), random.randrange(20))
         estado = Estado(random.choice(estados))

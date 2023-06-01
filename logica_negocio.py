@@ -68,14 +68,14 @@ class Controlador:
         self.buscarDatosLlamada()
 
 
-    def tomarseleccion(self, valor):
+    '''def tomarseleccion(self, valor):
         duracion = self.llamadaSeleccionada.getDuracion()
         cliente = self.llamadaSeleccionada.getNombreClienteDeLlamada()
         estado = self.llamadaSeleccionada.getEstadoActual()
         respuestas = self.buscarRespuestasDeLlamada()
         encuesta = self.buscarEncuestasLlamada()
         m.open("archivo.cvs","wt")
-        pickle.dump(obj, file)
+        pickle.dump(obj, file)'''
 
 
 
@@ -89,8 +89,12 @@ class Pantalla:
         
     def consultarEncuestas(self, gestor):
         self.gestorConsultasEncuestas = gestor
-        cargarllamadas(gestor.llamadas)
         cargarEncuestas(gestor.encuestas)
+        mostrarEncuesta(gestor.encuestas)
+        cargarllamadas(gestor.llamadas)
+        gestor.llamadas.append(cargarLlamadaManual())
+        
+
     
     def generarPantalla(self):
         self.pantalla = Tk()
@@ -165,7 +169,7 @@ class Pantalla:
         etiqueta3.pack()
         etiqueta4 = ttk.Label(self.marco, text="sus respuestas fueron: " + str(respuestas))
         etiqueta4.pack()
-        etiqueta5 = ttk.Label(self.marco, text="pertenecen a la encuesta " + str(encuesta))
+        etiqueta5 = ttk.Label(self.marco, text="pertenecen a la " + str(encuesta.getDescripcionEncuesta()))
         etiqueta5.pack()
         marco2 = ttk.Frame(self.marco)
         marco2.pack()
@@ -179,9 +183,6 @@ class Pantalla:
 def iniciarCasoDeUso():
     pant = Pantalla()
     gestor = Controlador(pant)
-    cargarEncuestas(gestor.encuestas)
-    mostrarEncuesta(gestor.encuestas)
-    gestor.encuestas.append(cargarLlamadaManual())
     pant.consultarEncuestas(gestor)
     gestor.consultarEncuestas()
 

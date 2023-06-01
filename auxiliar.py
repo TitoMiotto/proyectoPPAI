@@ -86,3 +86,10 @@ def mostrarLlamadas(llamadas):
         print("¿Tiene encuesta? ",i.encuestaEnviada)
         print("Cliente: ",i.cliente.nombreCompleto)
         print()
+
+
+def precarga(gestor):
+    cargarEncuestas(gestor.encuestas)
+    mostrarEncuesta(gestor.encuestas)
+    cargarllamadas(gestor.llamadas)
+    gestor.llamadas.append(cargarLlamadaManual())

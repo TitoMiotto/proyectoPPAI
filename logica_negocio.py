@@ -18,7 +18,7 @@ class Controlador:
     def buscarLlamadas(self):
         llamadasauxiliar = []
         for i in self.llamadas:
-            if (self.fechaInicio < i.esDePeriodo() < self.fechaFin) and i.tieneRespuestas():
+            if (self.fechaInicio <= i.esDePeriodo() <= self.fechaFin) and i.tieneRespuestas():
                 llamadasauxiliar.append(i)
         self.llamadas = llamadasauxiliar
 
@@ -89,10 +89,7 @@ class Pantalla:
         
     def consultarEncuestas(self, gestor):
         self.gestorConsultasEncuestas = gestor
-        cargarEncuestas(gestor.encuestas)
-        mostrarEncuesta(gestor.encuestas)
-        cargarllamadas(gestor.llamadas)
-        gestor.llamadas.append(cargarLlamadaManual())
+        gestor.consultarEncuestas()
         
 
     
@@ -183,8 +180,9 @@ class Pantalla:
 def iniciarCasoDeUso():
     pant = Pantalla()
     gestor = Controlador(pant)
+    precarga(gestor)
     pant.consultarEncuestas(gestor)
-    gestor.consultarEncuestas()
+    
 
 
 

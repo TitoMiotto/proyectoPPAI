@@ -25,11 +25,13 @@ def cargarEncuestas(vector):
 
 #metodo para mostrar encuesta
 def mostrarEncuesta(vector):
+    division = "-" * 40
     for e in vector:
-        print(e.fechaFinVigencia)
+        print(division)
         print(e.descripcion)
+        print(division)
         for i in e.pregunta:
-            print(i.getDescripcion())
+            print("la ", i.getDescripcion(), "tiene las siguientes respuestas:")
             print(i.listarRespuestasPosibles())
 
 
@@ -59,18 +61,15 @@ def cargarllamadas(vector):
 def cargarLlamadaManual():
     duracion = 1
     encuestaEnviada = True
+    print("Generando llamada manualmente...\n")
     cliente = Cliente(random.randrange(42100), input("Ingrese un nombre: "), random.randint(351000, 351999))
     fecha = datetime(int(input("Año: ")), int(input("Mes: ")), int(input("Dia: ")))
-    estado = Estado("Finalizado")
+    estado = Estado("Finalizada")
     cambioEstado = [CambioEstado(fecha, estado), CambioEstado(fecha + timedelta(minutes=random.randint(1, 15)) , estado), CambioEstado(fecha + timedelta(minutes=random.randint(1,15)), estado)]
-    if encuestaEnviada:
-        resEncuesta = []
-        print("Ingrese las respuestas que tendra una llamada de ejemplo ", 1)
-        for i in range(3):
-            resEncuesta.append(RespuestaDeCliente(fecha,RespuestaPosible("Respuesta "+ input("Ingrese numero de respuesta: "),i)))
-    else:
-        resEncuesta = None
-
+    resEncuesta = []
+    print("Ingrese las respuestas que tendra la llamada")
+    for i in range(3):
+        resEncuesta.append(RespuestaDeCliente(fecha,RespuestaPosible("Respuesta "+ input("Ingrese el numero de una respuesta perteneciente a la pregunta N°"+str(i)+": "),i)))
     return Llamada("", "", duracion, encuestaEnviada, "", cliente, cambioEstado, resEncuesta)
 
 

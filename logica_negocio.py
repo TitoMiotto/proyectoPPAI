@@ -180,13 +180,11 @@ class Pantalla:
     def tomarseleccion(self, valor):
         self.gestorConsultasEncuestas.tomarseleccion(valor)
 
+#las primeras funciones de esta son prerequisitos para iniciar el caso de uso
 def iniciarCasoDeUso():
     pant = Pantalla()
     gestor = Controlador(pant)
     precarga(gestor)
     pant.consultarEncuestas(gestor)
     
-
-
-
 iniciarCasoDeUso()

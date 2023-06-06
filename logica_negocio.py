@@ -41,7 +41,6 @@ class Controlador:
         encuesta = self.buscarEncuestasLlamada()
         self.pantalla.mostrarLlamada(duracion, cliente, estado, respuestas, encuesta)
 
-
     def buscarEncuestasLlamada(self):
         respuestasDelCliente = self.buscarRespuestasDeLlamada()
         n = len(respuestasDelCliente)
@@ -67,7 +66,6 @@ class Controlador:
         self.buscarLlamadas()
         self.pantalla.mostrarLlamadas()
         self.buscarDatosLlamada()
-
 
     def tomarseleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
         self.generarCSV(duracion, cliente, estado, respuestas, encuesta)
@@ -115,8 +113,6 @@ class Pantalla:
         self.gestorConsultasEncuestas = gestor
         gestor.consultarEncuestas()
         
-
-    
     def generarPantalla(self):
         self.pantalla = Tk()
         self.pantalla.geometry("390x200")
@@ -142,7 +138,7 @@ class Pantalla:
         enter = ttk.Button(self.marco, text="Enter", command=self.stop).grid(column=1,row=4)
         mainloop()
         return int(año.get()),int(mes.get()),int(dia.get())
-        
+
     #cambiar en la secuencia, tomar fecha inicio y despues generar pantalla.
     def tomarFechaInicio(self):
         self.generarPantalla()
@@ -157,16 +153,14 @@ class Pantalla:
         self.fechaFin = datetime(año, mes, dia)
         
     def mostrarLlamadas(self):
+        self.generarPantalla()
         posLlamada = self.tomarLlamada() - 1
         self.gestorConsultasEncuestas.tomarLlamada(posLlamada)
 
     def stop(self):
         self.pantalla.destroy()
 
-        
-    
     def tomarLlamada(self):
-        self.generarPantalla()
         #canvas = Canvas(self.pantalla, bg= "red", height= 240)
         #scroll = ttk.Scrollbar(self.pantalla,orient= "vertical", command = canvas.yview)
         #scroll.grid(row=0, column=2, sticky="ns")

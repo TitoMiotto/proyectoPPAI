@@ -26,6 +26,8 @@ def cargarEncuestas(vector):
 #metodo para mostrar encuesta
 def mostrarEncuesta(vector):
     division = "-" * 40
+    print(division)
+    print("Encuestas generadas automaticamente...")
     for e in vector:
         print(division)
         print(e.descripcion)
@@ -38,6 +40,7 @@ def mostrarEncuesta(vector):
 
 #metodo auxiliar para cargar un vector con llamadas
 def cargarllamadas(vector):
+    print("Llamadas generadas de forma aleatorea...")
     estados = ["inicial","finalizada","enProceso"]
     nombres = ("Martin", "Tito", "Franco", "Tomas", "Ignacio", "Eugenia", "Leonardo")
     apellidos = ("Sosa", "Montivero", "Malamud", "Venturini", "Boris")
@@ -61,7 +64,7 @@ def cargarllamadas(vector):
 def cargarLlamadaManual():
     duracion = 1
     encuestaEnviada = True
-    print("Generando llamada manualmente...\n")
+    print("\nGenerando llamada manualmente...")
     cliente = Cliente(random.randrange(42100), input("Ingrese un nombre: "), random.randint(351000, 351999))
     fecha = datetime(int(input("Año: ")), int(input("Mes: ")), int(input("Dia: ")))
     estado = Estado("Finalizada")

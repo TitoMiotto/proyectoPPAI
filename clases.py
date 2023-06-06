@@ -178,6 +178,11 @@ class Encuesta:
             vector.append(i.listarRespuestasPosibles())
         return vector
         
+    def getPreguntas(self):
+        vector = []
+        for i in self.pregunta:
+            vector.append(i.getDescripcion())
+        return vector
 
     
 

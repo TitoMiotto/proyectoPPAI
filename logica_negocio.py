@@ -1,8 +1,9 @@
 from auxiliar import *
-import pickle 
+import subprocess
 from os import path
 from tkinter import *
 from tkinter import ttk
+from reportlab.pdfgen import canvas
 
 class Controlador:
     def __init__(self, pantalla):
@@ -68,16 +69,39 @@ class Controlador:
         self.buscarDatosLlamada()
 
 
-    '''def tomarseleccion(self, valor):
-        duracion = self.llamadaSeleccionada.getDuracion()
-        cliente = self.llamadaSeleccionada.getNombreClienteDeLlamada()
-        estado = self.llamadaSeleccionada.getEstadoActual()
-        respuestas = self.buscarRespuestasDeLlamada()
-        encuesta = self.buscarEncuestasLlamada()
-        m.open("archivo.cvs","wt")
-        pickle.dump(obj, file)'''
+    def tomarseleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
+        self.generarCSV(duracion, cliente, estado, respuestas, encuesta)
+        if valor:
+            self.imprimir()
 
+    def generarCSV(self, duracion, cliente, estado, respuestas, encuesta):
+        m = open("./archivo.cvs","w")
+        #cabecera:
+        duracion = str(duracion.total_seconds()/60)
+        cabecera = cliente+","+estado+","+duracion+"\n"
+        m.write(cabecera)
+        preguntas = encuesta.getPreguntas()
+        n = len(preguntas)
+        for i in range(n):
+            m.write(preguntas[i])
+            m.write(",")
+            m.write(respuestas[i])
+            m.write("*\n")
+        m.close()
 
+    def imprimir(self):
+        c = canvas.Canvas("./archivo.pdf")
+    
+        with open("./archivo.cvs", 'r') as archivo:
+            contenido = archivo.read()
+        lineas = contenido.splitlines()
+        c.setFont("Helvetica", 12)
+        y = 700
+        for linea in lineas:
+            c.drawString(100, y, linea)
+            y -= 15
+        c.save()
+        subprocess.Popen(["cmd", "/C", "C:/Users/monti/OneDrive/Escritorio/gitppai/proyectoPPAI/archivo.pdf"])
 
 class Pantalla:
     def __init__(self):
@@ -118,6 +142,7 @@ class Pantalla:
         enter = ttk.Button(self.marco, text="Enter", command=self.stop).grid(column=1,row=4)
         mainloop()
         return int(año.get()),int(mes.get()),int(dia.get())
+        
     #cambiar en la secuencia, tomar fecha inicio y despues generar pantalla.
     def tomarFechaInicio(self):
         self.generarPantalla()
@@ -166,6 +191,7 @@ class Pantalla:
         etiqueta3.pack(anchor="w")
         etiqueta4 = ttk.Label(self.marco, text="sus respuestas fueron: " + str(respuestas))
         etiqueta4.pack(anchor="w")
+        variable = StringVar()
         if encuesta != None: 
             etiqueta5 = ttk.Label(self.marco, text="pertenecen a la " + str(encuesta.getDescripcionEncuesta()))
         else: 
@@ -173,12 +199,13 @@ class Pantalla:
         etiqueta5.pack(anchor="w")
         marco2 = ttk.Frame(self.pantalla)
         marco2.pack(fill="x", expand=True)
-        ttk.Button(marco2, text="cvs", command=lambda:(self.tomarseleccion(0),self.stop())).pack(side="right", anchor="se")
-        ttk.Button(marco2, text="valores de la encuesta", command=lambda:(self.tomarseleccion(1),self.stop())).pack(side="left", anchor="sw")
+        ttk.Button(marco2, text="cvs", command=lambda:(variable.set(0),self.stop())).pack(side="right", anchor="se")
+        ttk.Button(marco2, text="imprimir", command=lambda:(variable.set(1),self.stop())).pack(side="left", anchor="sw")
         mainloop()
+        self.tomarseleccion(int(variable.get()), duracion, cliente, estado, respuestas, encuesta)
 
-    def tomarseleccion(self, valor):
-        self.gestorConsultasEncuestas.tomarseleccion(valor)
+    def tomarseleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
+        self.gestorConsultasEncuestas.tomarseleccion(valor, duracion, cliente, estado, respuestas, encuesta)
 
 #las primeras funciones de esta son prerequisitos para iniciar el caso de uso
 def iniciarCasoDeUso():

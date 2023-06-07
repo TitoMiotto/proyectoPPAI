@@ -1,6 +1,4 @@
-from datetime import timedelta, time, datetime
-
-
+from datetime import timedelta
 
 class RespuestaDeCliente:
     def __init__(self, fechaEncuesta, respuestaSeleccionada):
@@ -38,8 +36,6 @@ class Llamada:
         for i in range(n-1):
             suma += self.cambioEstado[i+1].getFechaHoraInicio() - self.cambioEstado[i].getFechaHoraInicio()
         return suma
-
-        
 
     def determinarEstadoInicial(self):
         return self.cambioEstado.estadoInicial
@@ -183,8 +179,3 @@ class Encuesta:
         for i in self.pregunta:
             vector.append(i.getDescripcion())
         return vector
-
-    
-
-
-

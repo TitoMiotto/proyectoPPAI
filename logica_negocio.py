@@ -76,10 +76,12 @@ class GestorConsultarEncuesta:
 
 
 
-    def tomarseleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
-        self.generarCSV(duracion, cliente, estado, respuestas, encuesta)
+    def tomarSeleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
         if valor:
             self.imprimir()
+        else:
+            self.generarCSV(duracion, cliente, estado, respuestas, encuesta)
+
 
     def generarCSV(self, duracion, cliente, estado, respuestas, encuesta):
         m = open("./archivo.csv","w")
@@ -108,7 +110,7 @@ class GestorConsultarEncuesta:
             c.drawString(100, y, linea)
             y -= 15
         c.save()
-        subprocess.Popen(["cmd", "/C", "C:/Users/monti/OneDrive/Escritorio/gitppai/proyectoPPAI/archivo.pdf"])
+        # subprocess.Popen(["cmd", "/C", "C:/Users/monti/OneDrive/Escritorio/gitppai/proyectoPPAI/archivo.pdf"])
 
 class PantallaConsultarEncuesta:
     def __init__(self):
@@ -218,11 +220,11 @@ class PantallaConsultarEncuesta:
         ctk.CTkButton(marco2, text="csv", command=lambda:(variable.set(0),self.stop())).pack(side="right", anchor="se")
         ctk.CTkButton(marco2, text="imprimir", command=lambda:(variable.set(1),self.stop())).pack(side="left", anchor="sw")
         mainloop()
-        self.tomarseleccion(int(variable.get()), duracion, cliente, estado, respuestas, encuesta)
+        self.tomarSeleccion(int(variable.get()), duracion, cliente, estado, respuestas, encuesta)
 
 
-    def tomarseleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
-        self.gestorConsultasEncuestas.tomarseleccion(valor, duracion, cliente, estado, respuestas, encuesta)
+    def tomarSeleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
+        self.gestorConsultasEncuestas.tomarSeleccion(valor, duracion, cliente, estado, respuestas, encuesta)
 
 #las primeras funciones de esta son prerequisitos para iniciar el caso de uso
 def iniciarCasoDeUso():

@@ -114,7 +114,7 @@ class PantallaConsultarEncuesta:
         
     def generarPantalla(self):
         self.pantalla = Tk()
-        self.pantalla.geometry("590x200")
+        self.pantalla.geometry("490x200")
         marco = ctk.CTkFrame(self.pantalla, width=200, height=400)  
         marco.grid(padx=20, pady=20)
         self.marco = marco

@@ -24,6 +24,8 @@ class GestorConsultarEncuesta:
             if (self.fechaInicio <= i.esDePeriodo() <= self.fechaFin) and i.tieneRespuestas():
                 llamadasauxiliar.append(i)
         self.llamadas = llamadasauxiliar
+        return len(self.llamadas) > 0  
+
 
     #metodo para setear las fechas
     def tomarFechas(self, fechaHoraInicio, fechaHoraFin):
@@ -66,9 +68,13 @@ class GestorConsultarEncuesta:
 
     def consultarEncuestas(self):
         self.pantalla.solicitarFechasFiltro()
-        self.buscarLlamadas()
-        self.pantalla.mostrarLlamadas()
-        self.buscarDatosLlamada()
+        if self.buscarLlamadas():  
+            self.pantalla.mostrarLlamadas()
+            self.buscarDatosLlamada()
+        else:
+            self.pantalla.err404()  
+
+
 
     def tomarseleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
         self.generarCSV(duracion, cliente, estado, respuestas, encuesta)
@@ -163,6 +169,12 @@ class PantallaConsultarEncuesta:
     def stop(self):
         self.pantalla.destroy()
 
+    def err404(self):
+        self.generarPantalla()
+        message = "No se encontraron resultados para las fechas seleccionadas."
+        ctk.CTkLabel(self.marco, text=message).grid()
+        ctk.CTkButton(self.marco, text="Aceptar", command=self.stop).grid()
+        mainloop()
     def tomarLlamada(self):
         #canvas = Canvas(self.pantalla, bg= "red", height= 240)
         #scroll = ttk.Scrollbar(self.pantalla,orient= "vertical", command = canvas.yview)
@@ -181,26 +193,33 @@ class PantallaConsultarEncuesta:
         self.generarPantalla()
         self.marco.pack()
         variable = StringVar()
-        etiqueta1 = ctk.CTkLabel(self.marco, text="Cliente: " + str(cliente))  
+        etiqueta1 = ctk.CTkLabel(self.marco, text="Cliente: " + str(cliente))
         etiqueta1.pack(anchor="w")
-        etiqueta2 = ctk.CTkLabel(self.marco, text="Duración: " + str(duracion.total_seconds()/60) + " minutos")  
+        etiqueta2 = ctk.CTkLabel(self.marco, text="Duración: " + str(duracion.total_seconds()/60) + " minutos")
         etiqueta2.pack(anchor="w")
-        etiqueta3 = ctk.CTkLabel(self.marco, text="Estado Actual: " + str(estado))  
+        etiqueta3 = ctk.CTkLabel(self.marco, text="Estado Actual: " + str(estado))
         etiqueta3.pack(anchor="w")
-        etiqueta4 = ctk.CTkLabel(self.marco, text="Respuesta: " + str(respuestas))  
-        etiqueta4.pack(anchor="w")
-        variable = StringVar()
-        if encuesta != None: 
-            etiqueta5 = ctk.CTkLabel(self.marco, text=str(encuesta.getDescripcionEncuesta()))  
-        else: 
-            etiqueta5 = ctk.CTkLabel(self.marco, text="No se encontro encuesta para estas respuestas")  
+
+        if encuesta:
+            preguntas = encuesta.getPreguntas()
+            for i, pregunta in enumerate(preguntas):
+                etiqueta_pregunta = ctk.CTkLabel(self.marco, text="Pregunta {}: {}".format(i+1, pregunta))
+                etiqueta_pregunta.pack(anchor="w")
+                etiqueta_respuesta = ctk.CTkLabel(self.marco, text="Respuesta {}: {}".format(i+1, respuestas[i]))
+                etiqueta_respuesta.pack(anchor="w")
+
+            etiqueta5 = ctk.CTkLabel(self.marco, text=str(encuesta.getDescripcionEncuesta()))
+        else:
+            etiqueta5 = ctk.CTkLabel(self.marco, text="No se encontro encuesta para estas respuestas")
         etiqueta5.pack(anchor="w")
+
         marco2 = ctk.CTkFrame(self.pantalla)
         marco2.pack(fill="x", expand=True)
         ctk.CTkButton(marco2, text="csv", command=lambda:(variable.set(0),self.stop())).pack(side="right", anchor="se")
         ctk.CTkButton(marco2, text="imprimir", command=lambda:(variable.set(1),self.stop())).pack(side="left", anchor="sw")
         mainloop()
         self.tomarseleccion(int(variable.get()), duracion, cliente, estado, respuestas, encuesta)
+
 
     def tomarseleccion(self, valor, duracion, cliente, estado, respuestas, encuesta):
         self.gestorConsultasEncuestas.tomarseleccion(valor, duracion, cliente, estado, respuestas, encuesta)

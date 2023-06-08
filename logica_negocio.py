@@ -14,6 +14,10 @@ class GestorConsultarEncuesta:
         self.encuestas = []
         self.pantalla = pantalla
 
+    def set_initial_data(self, llamada, encuesta):
+        self.llamadas = [llamada]
+        self.encuestas = [encuesta]
+
     def buscarLlamadas(self):
         llamadasauxiliar = []
         for i in self.llamadas:
@@ -176,13 +180,13 @@ class PantallaConsultarEncuesta:
     def mostrarLlamada(self, duracion, cliente, estado, respuestas, encuesta):
         self.generarPantalla()
         self.marco.pack()
-        etiqueta1 = ctk.CTkLabel(self.marco, text="la llamada pertenece a: " + str(cliente))  
+        etiqueta1 = ctk.CTkLabel(self.marco, text="Cliente: " + str(cliente))  
         etiqueta1.pack(anchor="w")
-        etiqueta2 = ctk.CTkLabel(self.marco, text="duro: " + str(duracion.total_seconds()/60) + " minutos")  
+        etiqueta2 = ctk.CTkLabel(self.marco, text="Duración: " + str(duracion.total_seconds()/60) + " minutos")  
         etiqueta2.pack(anchor="w")
-        etiqueta3 = ctk.CTkLabel(self.marco, text="se encuentra: " + str(estado))  
+        etiqueta3 = ctk.CTkLabel(self.marco, text="Estado Actual: " + str(estado))  
         etiqueta3.pack(anchor="w")
-        etiqueta4 = ctk.CTkLabel(self.marco, text="sus respuestas fueron: " + str(respuestas))  
+        etiqueta4 = ctk.CTkLabel(self.marco, text="Respuesta: " + str(respuestas))  
         etiqueta4.pack(anchor="w")
         variable = StringVar()
         if encuesta != None: 
@@ -204,7 +208,7 @@ class PantallaConsultarEncuesta:
 def iniciarCasoDeUso():
     pant = PantallaConsultarEncuesta()
     gestor = GestorConsultarEncuesta(pant)
-    precarga(gestor)
+    gestor.set_initial_data(llamada1, encuesta1)
     pant.consultarEncuestas(gestor)
     
 iniciarCasoDeUso()

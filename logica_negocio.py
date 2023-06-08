@@ -14,7 +14,7 @@ class GestorConsultarEncuesta:
         self.encuestas = []
         self.pantalla = pantalla
 
-    def set_initial_data(self, llamada, encuesta):
+    def inicializar(self, llamada, encuesta):
         self.llamadas = [llamada]
         self.encuestas = [encuesta]
 
@@ -180,6 +180,7 @@ class PantallaConsultarEncuesta:
     def mostrarLlamada(self, duracion, cliente, estado, respuestas, encuesta):
         self.generarPantalla()
         self.marco.pack()
+        variable = StringVar()
         etiqueta1 = ctk.CTkLabel(self.marco, text="Cliente: " + str(cliente))  
         etiqueta1.pack(anchor="w")
         etiqueta2 = ctk.CTkLabel(self.marco, text="Duración: " + str(duracion.total_seconds()/60) + " minutos")  
@@ -190,7 +191,7 @@ class PantallaConsultarEncuesta:
         etiqueta4.pack(anchor="w")
         variable = StringVar()
         if encuesta != None: 
-            etiqueta5 = ctk.CTkLabel(self.marco, text="pertenecen a la " + str(encuesta.getDescripcionEncuesta()))  
+            etiqueta5 = ctk.CTkLabel(self.marco, text=str(encuesta.getDescripcionEncuesta()))  
         else: 
             etiqueta5 = ctk.CTkLabel(self.marco, text="No se encontro encuesta para estas respuestas")  
         etiqueta5.pack(anchor="w")
@@ -208,7 +209,7 @@ class PantallaConsultarEncuesta:
 def iniciarCasoDeUso():
     pant = PantallaConsultarEncuesta()
     gestor = GestorConsultarEncuesta(pant)
-    gestor.set_initial_data(llamada1, encuesta1)
+    gestor.inicializar(llamada1, encuesta1)
     pant.consultarEncuestas(gestor)
     
 iniciarCasoDeUso()
